@@ -112,12 +112,20 @@ ORDER BY GPA DESC
 LIMIT 5;
 
 -- Pregunta 12
-SELECT s.school_name, COUNT(st.student_id) AS num_students
-FROM schools s
-LEFT JOIN students st ON s.school_id = st.school_id
-GROUP BY s.school_name;
+SELECT schools.school_name, COUNT(students.student_id) AS student_count
+FROM schools
+LEFT JOIN students ON schools.school_id = students.school_id
+GROUP BY schools.school_name;
 
 -- Pregunta 13
+SELECT school_name, student_name, GPA
+FROM (
+    SELECT school_name, student_name, GPA,
+           RANK() OVER (PARTITION BY school_name ORDER BY GPA DESC) AS ranking
+    FROM students
+    JOIN schools ON students.school_id = schools.school_id
+) ranked_students
+WHERE ranking <= 3;
 
 
 
